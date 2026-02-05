@@ -22,6 +22,7 @@
       background: var(--bg);
       color: var(--text);
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
     header {
@@ -36,7 +37,7 @@
       padding: 0 64px;
       background: rgba(255,255,255,0.9);
       backdrop-filter: blur(6px);
-      z-index: 100;
+      z-index: 1000;
     }
 
     header img {
@@ -53,7 +54,9 @@
       gap: 6px;
       cursor: pointer;
       padding: 10px;
-      z-index: 101;
+      z-index: 1001;
+      background: none;
+      border: none;
     }
 
     .menu-toggle span {
@@ -61,12 +64,29 @@
       width: 24px;
       height: 2px;
       background-color: var(--text);
-      transition: 0.3s;
+      transition: transform 0.3s ease, opacity 0.3s ease;;
+    }
+
+    .menu-toggle span:nth-child(2) {
+      transition-duration: 0.1s;
+      transition-property: opacity;
+    }
+
+    .menu-toggle.active span:nth-child(1) {
+      transform: rotate(45deg) translate(6px, 6px);
+    }
+
+    .menu-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.active span:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
     }
 
     .dropdown-menu {
       position: absolute;
-      top: 50px;
+      top: 70px;
       right: 0;
       background: white;
       border: 1px solid #eaeaea;
@@ -78,10 +98,10 @@
       visibility: hidden;
       transform: translateY(-10px);
       transition: 0.3s;
+      z-index: 1000;
     }
 
-    .nav-container:focus-within .dropdown-menu,
-    .nav-container:hover .dropdown-menu {
+    .dropdown-menu.open {
       opacity: 1;
       visibility: visible;
       transform: translateY(0);
@@ -96,9 +116,9 @@
       transition: background 0.2s;
     }
 
-    .dropdown-menu a:hover {
-      background: #f5f5f5;
-    }
+    /*.dropdown-menu a:hover {*/
+    /*  background: #f5f5f5;*/
+    /*}*/
 
     main {
       padding: 160px 64px 120px;
@@ -185,28 +205,60 @@
       .hero h1 {
         font-size: 40px;
       }
+
+      .dropdown-menu {
+        position: fixed;
+        top: 72px;
+        left: 0;
+        right: 0;
+        width: 100%;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+        text-align: center;
+      }
     }
 
     html {
       scroll-behavior: smooth;
     }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 999;
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.3s;
+    }
+
+    .overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
   </style>
 </head>
 <body>
 
+<div class="overlay" id="overlay"></div>
+
 <header>
   <img src="logo.svg" alt="platonso logo" />
 
-  <nav class="nav-container" tabindex="0">
-    <div class="menu-toggle">
+  <nav class="nav-container">
+    <button class="menu-toggle" id="menuToggle" aria-label="Открыть меню" aria-expanded="false">
       <span></span>
       <span></span>
       <span></span>
-    </div>
-    <div class="dropdown-menu">
-      <a href="#about">Обо мне</a>
-      <a href="#projects">Проекты</a>
-      <a href="#contact">Контакты</a>
+    </button>
+    <div class="dropdown-menu" id="dropdownMenu">
+      <a href="#about" class="menu-link">Обо мне</a>
+      <a href="#projects" class="menu-link">Проекты</a>
+      <a href="#contact" class="menu-link">Контакты</a>
     </div>
   </nav>
 </header>
@@ -228,7 +280,7 @@
 
       <div class="project">
         <h3>PR Reviewer Service</h3>
-        <p>Сервис автоматического назначения ревьюеров для Pull Request’ов.</p>
+        <p>Сервис автоматического назначения ревьюеров для Pull Request'ов.</p>
         <a href="https://github.com/platonso/avito-pr-service" target="_blank">GitHub</a>
       </div>
 
@@ -251,6 +303,47 @@
   <span>© 2026 platonso</span>
   <span>Почта: <a href="mailto:me@platonso.ru">me@platonso.ru</a></span>
 </footer>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.getElementById('menuToggle');
+    const dropdownMenu = document.getElementById('dropdownMenu');
+    const overlay = document.getElementById('overlay');
+    const menuLinks = document.querySelectorAll('.menu-link');
+
+    function toggleMenu(forceClose = false) {
+      const isOpen = forceClose ? false : !dropdownMenu.classList.contains('open');
+
+      menuToggle.classList.toggle('active', isOpen);
+      dropdownMenu.classList.toggle('open', isOpen);
+      overlay.classList.toggle('active', isOpen);
+      menuToggle.setAttribute('aria-expanded', isOpen);
+
+      if (window.innerWidth <= 768) {
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+      }
+    }
+
+    menuToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMenu();
+    });
+
+    [overlay, ...menuLinks].forEach(el => {
+      el.addEventListener('click', () => toggleMenu(true));
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') toggleMenu(true);
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 768 && dropdownMenu.classList.contains('open')) {
+        toggleMenu(true);
+      }
+    });
+  });
+</script>
 
 </body>
 </html>
