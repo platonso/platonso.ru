@@ -67,11 +67,6 @@
       transition: transform 0.3s ease, opacity 0.3s ease;;
     }
 
-    .menu-toggle span:nth-child(2) {
-      transition-duration: 0.1s;
-      transition-property: opacity;
-    }
-
     .menu-toggle.active span:nth-child(1) {
       transform: rotate(45deg) translate(6px, 6px);
     }
@@ -305,7 +300,15 @@
 </footer>
 
 <script>
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+
   document.addEventListener('DOMContentLoaded', function() {
+    if (!window.location.hash) {
+      window.scrollTo(0, 0);
+    }
+
     const menuToggle = document.getElementById('menuToggle');
     const dropdownMenu = document.getElementById('dropdownMenu');
     const overlay = document.getElementById('overlay');
