@@ -5,7 +5,7 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>platonso</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #ffffff;
@@ -18,7 +18,7 @@
 
     body {
       margin: 0;
-      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Geist', sans-serif;
       background: var(--bg);
       color: var(--text);
       -webkit-font-smoothing: antialiased;
@@ -32,14 +32,72 @@
       height: 72px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       padding: 0 64px;
       background: rgba(255,255,255,0.9);
       backdrop-filter: blur(6px);
-      z-index: 10;
+      z-index: 100;
     }
 
     header img {
       height: 28px;
+    }
+
+    .nav-container {
+      position: relative;
+    }
+
+    .menu-toggle {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      cursor: pointer;
+      padding: 10px;
+      z-index: 101;
+    }
+
+    .menu-toggle span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background-color: var(--text);
+      transition: 0.3s;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background: white;
+      border: 1px solid #eaeaea;
+      border-radius: 8px;
+      padding: 16px 0;
+      min-width: 200px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: 0.3s;
+    }
+
+    .nav-container:focus-within .dropdown-menu,
+    .nav-container:hover .dropdown-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 12px 24px;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 15px;
+      transition: background 0.2s;
+    }
+
+    .dropdown-menu a:hover {
+      background: #f5f5f5;
     }
 
     main {
@@ -128,26 +186,43 @@
         font-size: 40px;
       }
     }
+
+    html {
+      scroll-behavior: smooth;
+    }
   </style>
 </head>
 <body>
 
 <header>
   <img src="logo.svg" alt="platonso logo" />
+
+  <nav class="nav-container" tabindex="0">
+    <div class="menu-toggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <div class="dropdown-menu">
+      <a href="#about">Обо мне</a>
+      <a href="#projects">Проекты</a>
+      <a href="#contact">Контакты</a>
+    </div>
+  </nav>
 </header>
 
 <main>
-  <div class="hero">
+  <div class="hero" id="about">
     <h1>Разработка
-      <br />надёжных сервисов, которые
-      <br />работают быстро</h1>
+      <br />надёжных и быстрых
+      <br />сервисов</h1>
     <p>
       Я разработчик, специализирующийся на backend‑системах,
       микросервисах и инфраструктуре на Go.
     </p>
   </div>
 
-  <section>
+  <section id="projects">
     <h2>Проекты</h2>
     <div class="projects">
 
@@ -172,7 +247,7 @@
   </section>
 </main>
 
-<footer>
+<footer id="contact">
   <span>© 2026 platonso</span>
   <span>Почта: <a href="mailto:me@platonso.ru">me@platonso.ru</a></span>
 </footer>
