@@ -202,15 +202,14 @@
       }
 
       .dropdown-menu {
-        position: fixed;
-        top: 72px;
-        left: 0;
+        position: absolute;
+        top: 70px;
         right: 0;
-        width: 100%;
-        border-radius: 0;
-        border-left: none;
-        border-right: none;
-        text-align: center;
+        width: 200px;
+        border-radius: 8px;
+        border: 1px solid #eaeaea;
+        text-align: left;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
       }
     }
 
@@ -321,10 +320,6 @@
       dropdownMenu.classList.toggle('open', isOpen);
       overlay.classList.toggle('active', isOpen);
       menuToggle.setAttribute('aria-expanded', isOpen);
-
-      if (window.innerWidth <= 768) {
-        document.body.style.overflow = isOpen ? 'hidden' : '';
-      }
     }
 
     menuToggle.addEventListener('click', (e) => {
