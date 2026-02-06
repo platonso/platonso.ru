@@ -218,16 +218,7 @@
     }
 
     .overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.3);
-      z-index: 999;
-      opacity: 0;
-      visibility: hidden;
-      transition: 0.3s;
+      background: transparent;
     }
 
     .overlay.active {
@@ -241,7 +232,9 @@
 <div class="overlay" id="overlay"></div>
 
 <header>
-  <img src="logo.svg" alt="platonso logo" />
+  <a href="/" id="logo">
+    <img src="logo.svg" alt="platonso logo" />
+  </a>
 
   <nav class="nav-container">
     <button class="menu-toggle" id="menuToggle" aria-label="Открыть меню" aria-expanded="false">
@@ -303,22 +296,23 @@
     history.scrollRestoration = 'manual';
   }
 
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     if (!window.location.hash) {
       window.scrollTo(0, 0);
     }
 
     const menuToggle = document.getElementById('menuToggle');
     const dropdownMenu = document.getElementById('dropdownMenu');
-    const overlay = document.getElementById('overlay');
     const menuLinks = document.querySelectorAll('.menu-link');
+    const logo = document.getElementById('logo');
 
     function toggleMenu(forceClose = false) {
-      const isOpen = forceClose ? false : !dropdownMenu.classList.contains('open');
+      const isOpen = forceClose
+              ? false
+              : !dropdownMenu.classList.contains('open');
 
       menuToggle.classList.toggle('active', isOpen);
       dropdownMenu.classList.toggle('open', isOpen);
-      overlay.classList.toggle('active', isOpen);
       menuToggle.setAttribute('aria-expanded', isOpen);
     }
 
@@ -327,8 +321,8 @@
       toggleMenu();
     });
 
-    [overlay, ...menuLinks].forEach(el => {
-      el.addEventListener('click', () => toggleMenu(true));
+    menuLinks.forEach(link => {
+      link.addEventListener('click', () => toggleMenu(true));
     });
 
     document.addEventListener('keydown', (e) => {
@@ -340,8 +334,24 @@
         toggleMenu(true);
       }
     });
+
+    if (logo) {
+      logo.addEventListener('click', (e) => {
+        e.preventDefault();
+
+        history.pushState('', document.title, window.location.pathname);
+
+        toggleMenu(true);
+
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      });
+    }
   });
 </script>
+
 
 </body>
 </html>
